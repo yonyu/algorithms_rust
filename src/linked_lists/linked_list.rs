@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 //use std::cell::RefCell;
-use std::ops::Deref;
+//use std::ops::Deref;
 use std::rc::Rc;
 use crate::linked_lists::linked_list_node::{Node, NodeLink};
 
@@ -89,9 +89,9 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         let mut current_link = self.head.clone();
         let mut previous_link: NodeLink<T> = None;
         while let Some(current_node) = current_link {
-            let mut node = current_node.borrow();
+            let node = current_node.borrow();
             if node.clone().next.is_none() { // we have reached the end of the list
-                previous_link.take().map(|mut n| n.borrow_mut().next = None); // sets the next node of the previous link to None
+                previous_link.take().map(|n| n.borrow_mut().next = None); // sets the next node of the previous link to None
                 self.count -= 1;
 
                 //return Some(Rc::try_unwrap(node.borrow()).ok().unwrap().into_inner().value);
