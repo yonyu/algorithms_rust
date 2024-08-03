@@ -1,3 +1,15 @@
 pub mod two_number_sum;
 pub mod single_number_iii;
 mod coin_change_making_greedy;
+pub mod multiples_3_5;
+pub mod fibonacci_even_numbers_sum;
+pub mod largest_prime_factor;
+pub mod largest_palindrome_product;
+pub mod smallest_evenly_divisible;
+pub mod sum_square_difference;
+pub mod get_nth_prime;
+pub mod factorial_digit_sum;
+pub mod fibonacci_number_with_digits;
+mod double_based_palindrome;
+pub(crate) mod ant_on_the_move;
+mod computing_nth_fibonacci_number;
