@@ -1,5 +1,5 @@
 /*
-The book's isbn13 is 9781593278284, isbn10 is 1593278284
+The book's isbn13 is 978-0-13-231681-1, isbn10 is 0132316811
 P. 291
 8. Minimum-sum descent: Some positive integers are arranged in an equilateral
 triangle with n numbers in its base like the one shown in the figure below for
