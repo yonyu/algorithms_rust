@@ -33,7 +33,6 @@ pub fn knapsack(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
                 dp[i][j as usize] = dp[i-1][j as usize];
             } else {
                 dp[i][j as usize] = dp[i-1][j as usize].max(items[i-1].value + dp[i-1][j as usize - items[i-1].weight as usize]);
-                let t = i as i32;
             }
         }
     }
@@ -52,6 +51,49 @@ pub fn knapsack(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
 
     packed.reverse();
     (dp[n][capacity as usize], packed)
+}
+
+// implement knapsack with memoization, that is, top-down dynamic programming
+pub fn knapsack_memoization(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
+    let n = items.len();
+    let mut memo = vec![vec![-1; 1 + capacity as usize]; n+1];
+
+    fn knapsack_memoization_helper(items: &Vec<Item>, capacity: i32, n: usize, memo: &mut Vec<Vec<i32>>) -> i32 {
+        if n == 0 || capacity == 0 {
+            return 0;
+        }
+
+        if memo[n][capacity as usize] != -1 {
+            return memo[n][capacity as usize];
+        }
+
+        if items[n-1].weight > capacity {
+            memo[n][capacity as usize] = knapsack_memoization_helper(items, capacity, n-1, memo);
+            return memo[n][capacity as usize];
+        }
+
+        let include = items[n-1].value + knapsack_memoization_helper(items, capacity - items[n-1].weight, n-1, memo);
+        let exclude = knapsack_memoization_helper(items, capacity, n-1, memo);
+        memo[n][capacity as usize] = include.max(exclude);
+        memo[n][capacity as usize]
+    }
+
+    let max_value = knapsack_memoization_helper(items, capacity, n, &mut memo);
+
+    // backtrack all items included in the knapsack, starting from the last item
+    let mut packed: Vec<i32> = Vec::new();
+    let mut j = capacity as usize;
+    let mut i = n;
+    while i > 0 {
+        if memo[i][j] != memo[i-1][j] {
+            packed.push(i as i32);
+            j -= items[i-1].weight as usize;
+        }
+        i -= 1;
+    }
+
+    packed.reverse();
+    (max_value, packed)
 }
 
 #[cfg(test)]
@@ -89,9 +131,12 @@ mod tests {
         let capacity = 5;
 
         let result = knapsack(&items, capacity);
-
         assert_eq!(result.0, 37);
-        assert_eq!(result.1, [1, 2, 4])
+        assert_eq!(result.1, [1, 2, 4]);
+
+        let result = knapsack_memoization(&items, capacity);
+        assert_eq!(result.0, 37);
+        assert_eq!(result.1, [1, 2, 4]);
     }
 
     #[test]
@@ -122,9 +167,12 @@ mod tests {
         let capacity = 4;
 
         let result = knapsack(&items, capacity);
-
         assert_eq!(result.0, 3500);
-        assert_eq!(result.1, [1, 3])
+        assert_eq!(result.1, [1, 3]);
+
+        let result = knapsack_memoization(&items, capacity);
+        assert_eq!(result.0, 3500);
+        assert_eq!(result.1, [1, 3]);
     }
 
     // grokking algorithms, 2nd Edition, page 215, isbn 9781633438538
@@ -163,9 +211,12 @@ mod tests {
         let capacity = 4;
 
         let result = knapsack(&items, capacity);
-
         assert_eq!(result.0, 4000);
-        assert_eq!(result.1, [3, 4])
+        assert_eq!(result.1, [3, 4]);
+
+        let result = knapsack_memoization(&items, capacity);
+        assert_eq!(result.0, 4000);
+        assert_eq!(result.1, [3, 4]);
     }
 
     //exercise 8.2, page 296, isbn 978-0-13-231681-1
@@ -206,8 +257,11 @@ mod tests {
         let capacity = 6;
 
         let result = knapsack(&items, capacity);
-
         assert_eq!(result.0, 65);
-        assert_eq!(result.1, [3, 5])
+        assert_eq!(result.1, [3, 5]);
+
+        let result = knapsack_memoization(&items, capacity);
+        assert_eq!(result.0, 65);
+        assert_eq!(result.1, [3, 5]);
     }
 }
