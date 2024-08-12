@@ -37,6 +37,7 @@ use crate::linked_lists::linked_list_node::{Node, NodeLink};
 #[allow(dead_code)]
 pub struct LinkedList<T> {
     head: NodeLink<T>,
+    tail: NodeLink<T>, // not implemented yet
     count: i32,
 }
 
@@ -47,24 +48,52 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     pub fn new_empty() -> Self {
         LinkedList {
             head: None,
-            count:0,
+            tail: None,
+            count: 0,
         }
     }
 
-    // The associated new method creates a new linked list instance with the head that is set to
-    // the given node and the count set to 1.
+    // The associated from_node method creates a new linked list instance with the head that is
+    // set to the given node and the count set to 1.
     #[allow(dead_code)]
-    pub fn new(node: Rc<RefCell<Node<T>>>) -> Self {
+    pub fn from_node(node: Rc<RefCell<Node<T>>>) -> Self {
         LinkedList {
-            head: Some(node),
+            head: Some(node.clone()),
+            tail: Some(node),
+            count: 1,
+        }
+    }
+
+    // The associated from_node method creates a new linked list instance with the head that is
+    // set to the node that is created with the given value and the count set to 1.
+    #[allow(dead_code)]
+    pub fn from_value(value: T) -> Self {
+        let new_node = Rc::new(RefCell::new(Node {value, next: None}));
+
+        LinkedList {
+            head: Some(new_node.clone()),
+            tail: Some(new_node),
             count: 1,
         }
     }
 
     // Get the head of the linked list
     #[allow(dead_code)]
-    pub fn head(&self) -> &NodeLink<T> {
-        &self.head
+    pub fn head(&self) -> NodeLink<T> {
+        // self.head is of type NodeLink<T>, which is defined as Option<Rc<RefCell<Node<T>>>>.
+        //
+        // 1. If self.head is None, self.head.clone() returns None.
+        // 2. If self.head is Some(Rc<RefCell<Node<T>>>), self.head.clone() returns a new
+        //    Option<Rc<RefCell<Node<T>>>> with a cloned Rc, which points to the same Node<T>
+        //    inside the RefCell.
+        // 3. The reference count for the Rc is incremented by 1 when you clone it, allowing
+        //    shared ownership of the Node.
+        // 4. When you clone a Rc, you are not cloning the underlying data. Instead, you are
+        //    incrementing the reference count of the Rc and getting a new Rc instance that
+        //    points to the same data.
+        // 5. The RefCell itself is not cloned when you clone the Rc. Instead, the Rc still
+        //    points to the same RefCell.
+        self.head.clone()
     }
 
     // Get the count of Nodes in the linked list
@@ -88,17 +117,34 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     // adds a value to the front of the linked list
     #[allow(dead_code)]
     pub fn push_front(&mut self, value: T) {
-        let new_node = Node::new(value);
-        new_node.borrow_mut().next = self.head.take();
+        // let new_node = Node::new(value, None);
+        // new_node.borrow_mut().next = self.head.take();
+        let new_node = Node::new(value, self.head.take());
 
-        self.head = Some(new_node);
+        self.head = Some(new_node.clone());
+
+        // if tail is None
+        if self.tail.is_none() {
+            self.tail = Some(new_node);
+        }
+
         self.count += 1;
     }
 
     // views the first node in the linked list without removing it
     #[allow(dead_code)]
     pub fn peek_head(&mut self) -> Option<Node<T>> {
-        self.head.take().map(|node| Rc::try_unwrap(node).ok().unwrap().into_inner())
+        //self.head.take().map(|node| Rc::try_unwrap(node).ok().unwrap().into_inner())
+        // Check if the head exists
+        self.head.as_ref().map(|head_node_rc| {
+            // Borrow the node immutably
+            let head_node = head_node_rc.borrow();
+            // Clone the node's contents and return it as an `Option<Node<T>>`
+            Node {
+                value: head_node.value.clone(),
+                next: None,  // We don't want to clone the whole list, just the head node
+            }
+        })
     }
 
     // remove and return the value of the first node in the linked list
@@ -117,6 +163,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         })
     }
 
+    // Should implement iterator.
     // to traverse the linked list starting from the head.
     // It clones the head to start the traversal and iterates through the list. The while let loop
     // dereferences and borrows the current node, prints its value, and then moves to the next node
@@ -136,6 +183,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         values
     }
 
+    // add a value to the end of the linked list
     #[allow(dead_code)]
     pub fn push_back(&mut self, value: T) { // O(n)
         self.push(value);
@@ -146,7 +194,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     pub fn push(&mut self, value: T) { // O(n)
         // traverse the list until the end is reached and then add the new node to the end
 
-        let new_node = Node::new(value);
+        let new_node = Node::new(value, None);
         self.count += 1;
 
         match self.head {
@@ -194,7 +242,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         self.pop_tail()
     }
 
-    // remove and return the value of the last node in the linked list
+    // removes the last node and returns its value
     #[allow(dead_code)]
     pub fn pop_tail(&mut self) -> Option<T> {
         let mut current_link = self.head.clone();

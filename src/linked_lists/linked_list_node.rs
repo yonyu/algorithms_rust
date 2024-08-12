@@ -22,13 +22,21 @@ pub struct Node<T> {
 
 // The Node struct has three methods: new, value and next.
 impl<T: Clone> Node<T> {
-    // The associated new method creates a new node with the given value and returns a reference-counted
-    // -counted smart pointer to a RefCell that wraps the node.
+    // The associated new method creates a new node with the given value and returns a
+    // reference-counted smart pointer to a RefCell that wraps the node.
+    // #[allow(dead_code)]
+    // pub fn new(value: T) -> Rc<RefCell<Node<T>>> {
+    //     Rc::new(RefCell::new(Node {
+    //         value,
+    //         next: None,
+    //     }))
+    // }
+
     #[allow(dead_code)]
-    pub fn new(value: T) -> Rc<RefCell<Node<T>>> {
+    pub fn new(value: T, next: NodeLink<T>) -> Rc<RefCell<Node<T>>> {
         Rc::new(RefCell::new(Node {
             value,
-            next: None,
+            next,
         }))
     }
 
