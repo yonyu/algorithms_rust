@@ -44,6 +44,7 @@ o	After filling out the DP table, we can backtrack from the minimum value in the
 3.	Time Complexity: The time complexity of this approach is O(n^2), where n is the number of rows
     in the triangle, since we need to compute the minimum sum for each element in the triangle.
 */
+#[allow(dead_code)]
 fn calculate_minimum_sum_descent(nums: Vec<i32>) -> Vec<i32> {
     let mut triangle = Vec::new();
     let mut row = 1;

@@ -30,6 +30,7 @@ use regex::Regex;
     4. Multiply the alphabetical value by its position in the sorted list to get the name score.
     5. Sum all the name scores to get the total score.
  */
+#[allow(dead_code)]
 pub fn find_names_scores() -> u32 {
     // Read the file contents
     let contents = fs::read_to_string("0022_names.txt").expect("Error reading file");
@@ -55,6 +56,7 @@ pub fn find_names_scores() -> u32 {
     total_score
 }
 
+#[allow(dead_code)]
 fn name_score(name: &str) -> u32 {
     name.chars().map(|c| (c as u32 - 'A' as u32 + 1)).sum()
 }
@@ -66,6 +68,7 @@ fn name_score(name: &str) -> u32 {
     4. Multiply the alphabetical value by its position in the sorted list to get the name score.
     5. Sum all the name scores to get the total score.
  */
+#[allow(dead_code)]
 pub fn find_names_scores_2() -> Result<i32, Box<dyn Error>> {
     let path = Path::new("0022_names.txt");
     let file = File::open(&path)?;

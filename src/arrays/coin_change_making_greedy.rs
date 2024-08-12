@@ -33,13 +33,14 @@ use std::collections::VecDeque;
 // P is the price of the item selected
 // the result requires the coins with smaller value at the beginning
 // the coin with the largest value at the end
-fn getChange(M:f32, P: f32) -> VecDeque<i32> {
+#[allow(dead_code)]
+fn get_change(m:f32, p: f32) -> VecDeque<i32> {
     // use a deque as we insert new element at the front
     let mut changes = VecDeque::new();
 
     let denominations = [1, 5, 10, 25, 50, 100];
     // remaining (the change that should be returned back to a customer) = Given_amount - spent
-    let mut remaining = (M * 100.0 - P * 100.0).round() as i32;
+    let mut remaining = (m * 100.0 - p * 100.0).round() as i32;
 
     for &denomination in denominations.iter().rev() {
         let count = remaining / denomination;
@@ -50,22 +51,22 @@ fn getChange(M:f32, P: f32) -> VecDeque<i32> {
     changes
 }
 
-
 // M is the total money inserted into the vending machine
 // P is the price of the item selected
 // the result requires the coins with smaller value at the beginning
 // the coin with the largest value at the end
-fn getChange2(M:f32, P: f32) -> VecDeque<i32>
+#[allow(dead_code)]
+fn get_change_2(_m:f32, _p: f32) -> VecDeque<i32>
 {
     let mut changes = VecDeque::new();
     let denominations = [1,5,10,25,50,100];
     // remaining (the change that should be returned back to a customer) = Given_amount - spent
-    let mut remaining = (M * 100.0 - P * 100.0).round() as i32;
+    //let remaining = (m * 100.0 - p * 100.0).round() as i32;
     changes.push_front(0);
     for v in 1 .. 6 {
         let mut t = i32::MAX;
         let mut j = 1;
-        while j <= denominations.len() && v - denominations[j-1] >= 0 {
+        while j <= denominations.len() && v as i32 - denominations[j-1] as i32 >= 0 {
             t = std::cmp::min(changes[v - denominations[j-1]], t);
             j += 1;
         }
@@ -81,10 +82,10 @@ mod tests {
 
     #[test]
     fn test_get_change() {
-        assert_eq!(getChange(5.0, 0.99), [1,0,0,0,0,4]);
-        assert_eq!(getChange(3.14, 1.99), [0,1,1,0,0,1]);
-        assert_eq!(getChange(3.0, 0.01), [4,0,2,1,1,2]);
-        assert_eq!(getChange(4.0, 3.14), [1,0,1,1,1,0]);
-        assert_eq!(getChange(0.45, 0.34), [1,0,1,0,0,0]);
+        assert_eq!(get_change(5.0, 0.99), [1,0,0,0,0,4]);
+        assert_eq!(get_change(3.14, 1.99), [0,1,1,0,0,1]);
+        assert_eq!(get_change(3.0, 0.01), [4,0,2,1,1,2]);
+        assert_eq!(get_change(4.0, 3.14), [1,0,1,1,1,0]);
+        assert_eq!(get_change(0.45, 0.34), [1,0,1,0,0,0]);
     }
 }

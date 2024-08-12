@@ -7,6 +7,7 @@ Find the sum of all numbers, less than n, which are palindromic in base 10 and b
 
  */
 
+#[allow(dead_code)]
 pub fn double_based_palindrome_sum_below_n(n: i32) -> i32 {
     let mut sum = 0;
     for i in 1..n {
@@ -18,6 +19,7 @@ pub fn double_based_palindrome_sum_below_n(n: i32) -> i32 {
     sum
 }
 
+#[allow(dead_code)]
 fn is_double_based_palindrome(n: i32) -> bool {
     let binary = format!("{:b}", n);
     let decimal = n.to_string();

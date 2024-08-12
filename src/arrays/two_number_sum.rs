@@ -1,6 +1,7 @@
 // @lc app=leetcode id=8 lang=rust
 // Given an array of distinct integer values, find if there is any pair that sum up
 // to a given number.
+#[allow(dead_code)]
 pub fn two_num_sum1(nums: &Vec<i32>, target: i32) -> bool {
     let mut seen = std::collections::HashSet::new();
     for num in nums {
@@ -23,6 +24,7 @@ use the same element twice.
 You can return the answer in any order.
 
 */
+#[allow(dead_code)]
 pub fn two_num_sum2(nums: &Vec<i32>, target: i32) -> Vec<i32> {
     let mut seen = std::collections::HashMap::new();
     for (i, num) in nums.iter().enumerate() {

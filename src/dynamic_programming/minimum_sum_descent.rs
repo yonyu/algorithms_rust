@@ -87,6 +87,7 @@ each number in the row to compute the minimum sum.
 6. The function signature for the algorithm is as follows:
 fn calculate_minimum_sum_descent(nums: Vec<i32>) -> Vec<i32>
 */
+#[allow(dead_code)]
 pub fn calculate_minimum_sum_descent(nums: Vec<i32>) -> Vec<i32> {
     // convert the input vector into the triangle representation
     let mut triangle: Vec<Vec<i32>> = Vec::new(); // equilateral triangle
@@ -107,7 +108,7 @@ pub fn calculate_minimum_sum_descent(nums: Vec<i32>) -> Vec<i32> {
     let mut paths: Vec<Vec<Vec<i32>>> = Vec::new();
     for row in 0..rows {
         paths.push(Vec::new());
-        for col in 0..triangle[row].len() {
+        for _col in 0..triangle[row].len() {
             paths[row].push(vec![0; row+1]);
         }
     }
@@ -170,6 +171,7 @@ pub fn calculate_minimum_sum_descent(nums: Vec<i32>) -> Vec<i32> {
 }
 
 // Use 3D array to store the paths from the apex to any [i][j] in the triangle
+#[allow(dead_code)]
 pub fn calculate_minimum_sum_descent_2(nums: Vec<i32>) -> Vec<i32> {
     // Convert the vector of integers into a triangle representation
     let mut triangle = Vec::new();
@@ -188,7 +190,7 @@ pub fn calculate_minimum_sum_descent_2(nums: Vec<i32>) -> Vec<i32> {
     let mut paths:Vec<Vec<Vec<i32>>> = Vec::new();
     for row in 0..n {
         paths.push(Vec::new());
-        for col in 0..triangle[row].len() {
+        for _col in 0..triangle[row].len() {
             paths[row].push(vec![0; row+1]);
         }
     }
@@ -242,6 +244,7 @@ pub fn calculate_minimum_sum_descent_2(nums: Vec<i32>) -> Vec<i32> {
 }
 
 // backtrack to find the path with the minimum sum
+#[allow(dead_code)]
 pub fn calculate_minimum_sum_descent_3(nums: Vec<i32>) -> Vec<i32> {
     // Step 1: Convert the input vector to a triangle representation.
     let mut triangle = Vec::new();
@@ -305,6 +308,7 @@ pub fn calculate_minimum_sum_descent_3(nums: Vec<i32>) -> Vec<i32> {
     result.reverse();
     result
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;

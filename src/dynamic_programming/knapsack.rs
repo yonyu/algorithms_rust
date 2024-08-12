@@ -15,6 +15,7 @@ pub struct Item {
     pub value: i32,
 }
 
+#[allow(dead_code)]
 pub fn knapsack(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
     let n = items.len();
     let mut dp = vec![vec![0; 1 + capacity as usize]; n+1];
@@ -46,6 +47,7 @@ pub fn knapsack(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
 }
 
 // implement knapsack with memoization, that is, top-down dynamic programming
+#[allow(dead_code)]
 pub fn knapsack_memoization(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
     let n = items.len();
     let mut memo = vec![vec![-1; capacity as usize + 1]; n + 1];
@@ -105,6 +107,7 @@ pub fn knapsack_memoization(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>)
 }
 
 // implement knapsack with memoization, that is, top-down dynamic programming
+#[allow(dead_code)]
 pub fn knapsack_memoization_2(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
     let n = items.len();
     let mut memo = vec![vec![-1; 1 + capacity as usize]; n+1];

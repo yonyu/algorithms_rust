@@ -4,6 +4,7 @@
  *
  * Find the sum of all the multiples of 3 or 5 below 1000.
  */
+#[allow(dead_code)]
 pub fn sum_multiples_3_5_below_1000() -> i32 {
     let mut sum : i32 = 0;
 
@@ -16,6 +17,7 @@ pub fn sum_multiples_3_5_below_1000() -> i32 {
     sum
 }
 
+#[allow(dead_code)]
 fn sum_multiples_3_5_below_1000_functional() -> i32 {
     let sum = (1..1000)
         .filter(|&x| x % 3 == 0 || x % 5 == 0)

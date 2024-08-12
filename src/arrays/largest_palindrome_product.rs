@@ -9,6 +9,7 @@ Find the largest palindrome made from the product of two 3-digit numbers.
 Answer: 906609
 */
 
+#[allow(dead_code)]
 pub fn find_largest_palindrome_product() -> u64 {
     let mut largest : u64 = 0;
     for i in 100..=999 {
@@ -23,6 +24,7 @@ pub fn find_largest_palindrome_product() -> u64 {
     largest
 }
 
+#[allow(dead_code)]
 fn is_palindrome(n: u64) -> bool {
     let s = n.to_string();
     let rev = s.chars().rev().collect::<String>();

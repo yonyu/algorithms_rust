@@ -49,12 +49,14 @@ struct State {
 impl Eq for State { }
 
 impl Ord for State {
+    #[allow(dead_code)]
     fn cmp(&self, other: &Self) -> Ordering {
         other.cost.partial_cmp(&self.cost).unwrap() // Reverse ordering so that the minimum cost is at the top (min heap)
     }
 }
 
 impl PartialOrd for State {
+    #[allow(dead_code)]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other)) // Delegate to the Ord implementation
     }
@@ -64,6 +66,7 @@ impl PartialOrd for State {
 // The velocity v depends on y0 and y1 as follows:
 // If y0 = y1, the velocity v equals y0.
 // If y0 ≠ y1, the velocity v equals (y1 - y0) / (ln(y1) - ln(y0)).
+#[allow(dead_code)]
 fn velocity(y0: usize, y1: usize) -> f64 {
     if y0 == y1 {
         y0 as f64
@@ -75,6 +78,7 @@ fn velocity(y0: usize, y1: usize) -> f64 {
 }
 
 // Function to calculate Euclidean distance
+#[allow(dead_code)]
 fn distance(x0: usize, y0: usize, x1: usize, y1: usize) -> f64 {
     let dx = (x1 as f64 - x0 as f64).powi(2);
     let dy = (y1 as f64 - y0 as f64).powi(2);
@@ -100,6 +104,7 @@ Here's how to approach this problem:
 
 
  */
+#[allow(dead_code)]
 pub fn find_minimum_time(d: usize) -> f64 {
     let mut dp = vec![vec![f64::INFINITY; d + 1]; d + 1];
 

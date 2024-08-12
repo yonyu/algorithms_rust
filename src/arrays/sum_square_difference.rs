@@ -16,6 +16,7 @@ Hence the difference between the sum of the squares of the first ten natural num
 Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
  */
 
+#[allow(dead_code)]
 fn sum_square_difference() -> u64 {
     // let mut sum1: i64 = 0;
     // for i  in 1i64..=100 {

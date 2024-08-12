@@ -11,6 +11,7 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
 sum of the even-valued terms.
 */
 
+#[allow(dead_code)]
 pub fn fibonacci_even_numbers_sum(cap: i32) -> i32 {
     let mut total : i32 = 2;
     let mut fib1 = 1;

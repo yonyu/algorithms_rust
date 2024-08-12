@@ -6,6 +6,7 @@ By listing the first six prime numbers: 2, 3, ,5, 7, 11 and 13, we can see that 
 What is the 10001st prime number?
 */
 
+#[allow(dead_code)]
 pub fn get_nth_prime() -> i32 {
     let limit = 200_000; // Estimate, can be adjusted
     let primes = sieve(limit);
@@ -19,6 +20,7 @@ Time Complexity of Sieve of Eratosthenes
 The Sieve of Eratosthenes has a time complexity of 𝑂(𝑛 log log 𝑛), which is significantly 
 more efficient for generating large numbers of primes.
 */
+#[allow(dead_code)]
 fn sieve(limit: usize) -> Vec<usize> {
     let mut sieve = vec![true; limit];
     sieve[0] = false; // 0 is not a prime number
@@ -57,6 +59,7 @@ On average, this involves checking about sqrt(𝑛) primes due to the properties
 Overall, the time complexity is influenced by both the number of primes and the cost of checking each 
 candidate. This results in an average complexity of approximately 𝑂(n * sqrt(n)).
 */
+#[allow(dead_code)]
 pub fn get_nth_prime_2() -> i32 {
     let mut primes = vec![2];
     let mut n = 3;

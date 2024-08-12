@@ -5,12 +5,14 @@ use std::rc::Rc;
 use crate::linked_lists::linked_list_node::{Node, NodeLink};
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub struct LinkedList<T> {
     pub head: NodeLink<T>,
     pub count: i32,
 }
 
 impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
+    #[allow(dead_code)]
     pub fn new() -> Self {
         LinkedList {
             head: None,
@@ -19,6 +21,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     }
 
     // add a value to the front of the linked list
+    #[allow(dead_code)]
     pub fn push_front(&mut self, value: T) {
         let new_node = Node::new(value);
         new_node.borrow_mut().next = self.head.take();
@@ -28,16 +31,19 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     }
 
     // return the value of the first node in the linked list without removing it
+    #[allow(dead_code)]
     pub fn peek_front(&mut self) -> Option<T> {
         self.head.take().map(|node| Rc::try_unwrap(node).ok().unwrap().into_inner().value)
     }
 
     // return the first node in the linked list without removing it
+    #[allow(dead_code)]
     pub fn peek_front_node(&mut self) -> Option<Node<T>> {
         self.head.take().map(|node| Rc::try_unwrap(node).ok().unwrap().into_inner())
     }
 
     // remove and return the value of the first node in the linked list
+    #[allow(dead_code)]
     pub fn pop_front(&mut self) -> Option<T> {
         self.head.take().map(|head| {
             if let Some(next) = head.borrow_mut().next.take() {
@@ -56,6 +62,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     // It clones the head to start the traversal and iterates through the list. The while let loop
     // dereferences and borrows the current node, prints its value, and then moves to the next node
     // by cloning its link. This avoids mutable borrowing issues and ensures safe traversal.
+    #[allow(dead_code)]
     pub fn traverse(&self) -> Vec<T>{
         let mut current_link = self.head.clone();
         let mut values = Vec::new();
@@ -71,6 +78,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     }
 
     // return the value of the last node in the linked list without removing it
+    #[allow(dead_code)]
     pub fn peek_tail(&mut self) -> Option<T> {
         // traverse the list until the end is reached
         let mut current_link = self.head.clone();
@@ -85,6 +93,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
      }
 
     // remove and return the value of the last node in the linked list
+    #[allow(dead_code)]
     pub fn pop_tail(&mut self) -> Option<T> {
         let mut current_link = self.head.clone();
         let mut previous_link: NodeLink<T> = None;
@@ -106,11 +115,13 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         None
     }
 
+    #[allow(dead_code)]
     pub fn pop_back(&mut self) -> Option<T> {
         self.pop_tail()
     }
 
     // add a value to the end of the linked list
+    #[allow(dead_code)]
     pub fn push(&mut self, value: T) { // O(n)
         // traverse the list until the end is reached and then add the new node to the end
 
@@ -142,16 +153,19 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         }
     }
 
+    #[allow(dead_code)]
     pub fn push_back(&mut self, value: T) { // O(n)
         self.push(value);
     }
 }
 
+#[allow(dead_code)]
 pub struct ListIterator<T> {
     current: NodeLink<T>,
 }
 
 impl<T: Clone> ListIterator<T>{
+    #[allow(dead_code)]
     fn new(start_at: NodeLink<T>) -> ListIterator<T> {
         ListIterator {
             current: start_at,
@@ -160,6 +174,8 @@ impl<T: Clone> ListIterator<T>{
 }
 impl <T: Clone> Iterator for ListIterator<T> {
     type Item = T;
+
+    #[allow(dead_code)]
     fn next(&mut self) -> Option<Self::Item> {
         let current = &self.current;
         let mut result = None;

@@ -6,6 +6,8 @@
 
 - dynamic_programming/ - Algorithms for dynamic programming
 
+- grids/ - Algorithms for 2D arrays
+
 - linked_lists/ - Algorithms for linked lists
 
 - lists/ - Algorithms for lists

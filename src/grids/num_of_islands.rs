@@ -44,6 +44,7 @@ Constraints:
 //
 // the best speed:   // 5 ms,  Beats 95.53%
 // and memory usage: // 8.94 MB, Beats 87.15%
+#[allow(dead_code)]
 pub fn num_islands(grid: Vec<Vec<char>>) -> i32 {
     let mut grid = grid;
     let mut count = 0;
@@ -82,6 +83,7 @@ pub fn num_islands(grid: Vec<Vec<char>>) -> i32 {
 
 // By using an explicit stack, this approach avoids the risk of stack overflow, which is common with
 // deep recursion on large grids.
+#[allow(dead_code)]
 pub fn num_islands_1(mut grid: Vec<Vec<char>>) -> i32 {
     let mut count = 0;
     let rows = grid.len();
@@ -123,23 +125,24 @@ pub fn num_islands_1(mut grid: Vec<Vec<char>>) -> i32 {
 }
 
 // use a local variable dfs inside dfs function to avoid passing grid as a parameter.
+#[allow(dead_code)]
 pub fn num_islands_2(grid: Vec<Vec<char>>) -> i32 {
     let mut grid = grid;
     let mut count = 0;
 
     fn dfs(grid: &mut Vec<Vec<char>>, i: i32, j: i32) {
 
-        let adj : [(i32, i32); 4] = [
-            (0, 1),
-            (0, -1),
-            (1, 0),
-            (-1, 0),
+        let adj : [[i32; 2]; 4] = [
+            [0, 1],
+            [0, -1],
+            [1, 0],
+            [-1, 0],
         ];
         if i < 0 || j < 0 || i >= grid.len() as i32 || j >= grid[0].len() as i32 || grid[i as usize][j as usize] == '0' {
             return;
         }
         grid[i as usize][j as usize] = '0';
-        for (dx, dy) in adj.iter() {
+        for [dx, dy] in adj.into_iter() {
             dfs(grid, i + dx, j + dy);
         }
     }
@@ -163,6 +166,7 @@ const ADJ : [(i32, i32); 4] = [
 ];
 
 // use a constant array to represent the 4 directions of a cell.
+#[allow(dead_code)]
 fn num_islands_3(grid: Vec<Vec<char>>) -> i32 {
     let mut grid = grid;
     let mut count = 0;

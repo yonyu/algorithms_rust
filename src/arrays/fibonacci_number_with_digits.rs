@@ -29,6 +29,7 @@
 use num_bigint::BigUint;
 use num_traits::One;
 
+#[allow(dead_code)]
 pub fn fibonacci_number_with_specified_digits(n: u32) -> u32 {
     let mut fib1: BigUint = BigUint::one();
     let mut fib2: BigUint = BigUint::one();

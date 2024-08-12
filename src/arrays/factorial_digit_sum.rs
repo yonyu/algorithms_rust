@@ -9,6 +9,7 @@ Find the sum of the digits in the number 100!
 */
 use num_bigint::BigUint;
 
+#[allow(dead_code)]
 pub fn factorial_digit_sum(n: u64) -> u64 {
     let fact = factorial(n);
     let sum = sum_of_digits(&fact);
@@ -16,6 +17,7 @@ pub fn factorial_digit_sum(n: u64) -> u64 {
     sum
 }
 
+#[allow(dead_code)]
 fn sum_of_digits(num: &BigUint) -> u64 {
     num.to_string()
         .chars()
@@ -29,6 +31,7 @@ fn sum_of_digits(num: &BigUint) -> u64 {
 // using the BigUint type from the num_bigint crate
 // to handle large factorials
 // (note: this function is not optimized for large numbers)
+#[allow(dead_code)]
 fn factorial(n: u64) -> BigUint {
     // find the factorial of n
     (1..=n).product()

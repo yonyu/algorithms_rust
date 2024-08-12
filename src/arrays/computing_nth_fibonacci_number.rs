@@ -39,6 +39,7 @@ pub fn compute_nth_fibonacci_number_from_bottom_up_2(n: u32) -> u64 {
 
 // Computing the nth Fibonacci number from top down.
 // Using a vector to store the Fibonacci numbers.
+#[allow(dead_code)]
 pub fn compute_nth_fibonacci_number_from_top_down(n: u32) -> u64 {
     let mut fib: Vec<u64> = vec![0; (n + 1) as usize];
 
@@ -52,6 +53,7 @@ pub fn compute_nth_fibonacci_number_from_top_down(n: u32) -> u64 {
     compute_nth_fibonacci_number_from_top_down_helper(n, &mut fib)
 }
 
+#[allow(dead_code)]
 fn compute_nth_fibonacci_number_from_top_down_helper(n: u32, fib: &mut Vec<u64>) -> u64 {
     if n == 0 {
         return 0u64;
@@ -67,6 +69,7 @@ fn compute_nth_fibonacci_number_from_top_down_helper(n: u32, fib: &mut Vec<u64>)
 }
 
 // Computing the nth Fibonacci number using the formula.
+#[allow(dead_code)]
 pub fn compute_fibonacci_number_using_formula(n: u32) -> u64 {
     let fai: f64 = (1.0 + 5f64.sqrt()) / 2.0;
 

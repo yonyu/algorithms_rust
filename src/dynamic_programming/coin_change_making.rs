@@ -49,6 +49,7 @@
 // needed by iterating over the coin denominations and selecting the one that minimizes the number of coins.
 //
 // The function returns dp[N], which contains the minimum number of coins needed to make change for the amount N.
+#[allow(dead_code)]
 pub fn change_making(n: usize, coins: Vec<usize>) -> usize {
     // Initialize the dp array where dp[i] represents the minimum number of coins needed for amount i.
     //                               *****

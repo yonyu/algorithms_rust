@@ -1,6 +1,7 @@
 use std::cmp::max;
 
 // 0132316811, P288
+#[allow(dead_code)]
 pub fn coin_collecting(c: Vec<Vec<i32>>, n: i32, m: i32) -> i32 {
     let mut dp = vec![vec![0; m as usize]; n as usize];
     dp[0][0] = c[0][0];
@@ -21,6 +22,7 @@ pub fn coin_collecting(c: Vec<Vec<i32>>, n: i32, m: i32) -> i32 {
     dp[n as usize - 1][m as usize - 1]
 }
 
+#[allow(dead_code)]
 pub fn coin_collecting_with_inaccessible_cells(c: Vec<Vec<i32>>, n: usize, m: usize) -> i32 {
     let mut dp = vec![vec![0; m]; n];
     dp[0][0] = c[0][0];

@@ -118,6 +118,7 @@ Please write the function in Rust with the following signature:
 pub fn get_max_consecutive_ones(server_states: &str, k: i32) -> i32
 
 */
+#[allow(dead_code)]
 fn get_max_consecutive_on(server_states: &str, k: usize) -> i32 {
     if k == 0 || server_states.is_empty() {
         return -1;

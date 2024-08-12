@@ -16,6 +16,7 @@
  *
  * 3. Please write code in Rust.
  */
+#[allow(dead_code)]
 pub fn find_single_numbers(nums: Vec<i32>) -> Vec<i32> {
     let mut xor = 0;
     for num in nums.iter() {
