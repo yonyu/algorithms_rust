@@ -3,6 +3,7 @@ mod dynamic_programming;
 mod linked_lists;
 mod lists;
 mod strings;
+mod grids;
 
 use std::collections::VecDeque;
 
