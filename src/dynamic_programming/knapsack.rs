@@ -19,14 +19,6 @@ pub fn knapsack(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
     let n = items.len();
     let mut dp = vec![vec![0; 1 + capacity as usize]; n+1];
 
-    // for i in 0..=n {
-    //     dp[i][0] = 0;
-    // }
-    //
-    // for j in 0..=capacity {
-    //     dp[0][j as usize] = 0;
-    // }
-
     for i in 1..=n {
         for j in 1..=capacity {
             if items[i-1].weight > j {
@@ -56,6 +48,65 @@ pub fn knapsack(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
 // implement knapsack with memoization, that is, top-down dynamic programming
 pub fn knapsack_memoization(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
     let n = items.len();
+    let mut memo = vec![vec![-1; capacity as usize + 1]; n + 1];
+
+    // Initializing the memo table to 0 for i=0 and j=0 is not required
+    // because it is computed in the base case of the recursive function.
+    // for i in 0..=n {
+    //     memo[i][0] = 0;
+    // }
+
+    // for j in 1..=capacity {
+    //     memo[0][j as usize] = 0;
+    // }
+
+    fn knapsack_memoization_helper(items: &Vec<Item>, i: usize, j: usize, memo: &mut Vec<Vec<i32>>) -> i32 {
+        // base case
+        if i == 0 || j == 0 {
+            return 0;
+        }
+
+        // if the value is already computed, return it
+        if memo[i][j] != -1 {
+            return memo[i][j];
+        }
+
+        // compute the optimal value without the ith item
+        let mut max1 = knapsack_memoization_helper(items, i - 1, j, memo);
+
+        // if the weight of the current item is less than or equal to the capacity, include it
+        if j >= items[i - 1].weight as usize {
+            let max2 = knapsack_memoization_helper(items, i - 1, j - items[i - 1].weight as usize, memo);
+            max1 = max1.max(max2 + items[i - 1].value);
+        }
+
+        // store the result in the memo table
+        memo[i][j] = max1;
+
+        memo[i][j]
+    }
+
+    let max_value: i32 = knapsack_memoization_helper(&items, n, capacity as usize, &mut memo);
+
+    // backtrack all items included in the knapsack, starting from the last item
+    let mut packed: Vec<i32> = Vec::new();
+    let mut i = n;
+    let mut j = capacity as usize;
+    while i > 0 {
+        if memo[i][j] != memo[i - 1][j] {
+            packed.push(i as i32);
+            j -= items[i - 1].weight as usize;
+        }
+        i -= 1;
+    }
+
+    packed.reverse();
+    (max_value, packed)
+}
+
+// implement knapsack with memoization, that is, top-down dynamic programming
+pub fn knapsack_memoization_2(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>) {
+    let n = items.len();
     let mut memo = vec![vec![-1; 1 + capacity as usize]; n+1];
 
     fn knapsack_memoization_helper(items: &Vec<Item>, capacity: i32, n: usize, memo: &mut Vec<Vec<i32>>) -> i32 {
@@ -63,6 +114,7 @@ pub fn knapsack_memoization(items: &Vec<Item>, capacity: i32) -> (i32, Vec<i32>)
             return 0;
         }
 
+        // if the value is already computed, return it
         if memo[n][capacity as usize] != -1 {
             return memo[n][capacity as usize];
         }
