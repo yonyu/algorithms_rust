@@ -1,7 +1,11 @@
+mod arrays;
+mod dynamic_programming;
+mod linked_lists;
+mod lists;
+mod strings;
+
 use std::collections::VecDeque;
 
-mod arrays;
-mod linked_lists;
 
 fn main() {
     println!("Hello world!");

@@ -12,4 +12,4 @@ pub mod factorial_digit_sum;
 pub mod fibonacci_number_with_digits;
 mod double_based_palindrome;
 pub(crate) mod ant_on_the_move;
-mod computing_nth_fibonacci_number;
+pub mod computing_nth_fibonacci_number;
