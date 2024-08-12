@@ -11,6 +11,9 @@ use std::cmp::max;
 // Let F(n) be the maximum amount that can be picked up from the row
 // of n coins. One group is F(n-2) + cn, the other group is F(n-1).
 // the maximum is among F(n-2) + cn and F(n-1).
+//
+//   F(n) = max { F(n-2) + cn, F(n-1) },     n >= 2
+//
 // Also, F(0) = 0, if no coin, no money.
 //       F(1) = c1, if only one coin, pick it up.
 #[allow(dead_code)]
