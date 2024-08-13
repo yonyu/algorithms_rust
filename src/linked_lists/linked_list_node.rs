@@ -20,6 +20,18 @@ pub struct Node<T> {
     pub next: NodeLink<T>,
 }
 
+// impl PartialEq for Node<i32> {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.value == other.value
+//     }
+// }
+
+// impl<T: Clone + Eq> PartialEq for Node<T> {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.value == other.value && self.next == other.next
+//     }
+// }
+
 // The Node struct has three methods: new, value and next.
 impl<T: Clone> Node<T> {
     // The associated new method creates a new node with the given value and returns a

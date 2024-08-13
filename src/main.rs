@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 mod arrays;
 mod dynamic_programming;
 mod linked_lists;
