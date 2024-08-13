@@ -20,13 +20,7 @@ pub struct Node<T> {
     pub next: NodeLink<T>,
 }
 
-// impl PartialEq for Node<i32> {
-//     fn eq(&self, other: &Self) -> bool {
-//         self.value == other.value
-//     }
-// }
-
-// impl<T: Clone + Eq> PartialEq for Node<T> {
+// impl<T: Clone + Eq> PartialEq for Node<T> { // required for comparing two Node instances
 //     fn eq(&self, other: &Self) -> bool {
 //         self.value == other.value && self.next == other.next
 //     }
@@ -36,14 +30,6 @@ pub struct Node<T> {
 impl<T: Clone> Node<T> {
     // The associated new method creates a new node with the given value and returns a
     // reference-counted smart pointer to a RefCell that wraps the node.
-    // #[allow(dead_code)]
-    // pub fn new(value: T) -> Rc<RefCell<Node<T>>> {
-    //     Rc::new(RefCell::new(Node {
-    //         value,
-    //         next: None,
-    //     }))
-    // }
-
     #[allow(dead_code)]
     pub fn new(value: T, next: NodeLink<T>) -> Rc<RefCell<Node<T>>> {
         Rc::new(RefCell::new(Node {

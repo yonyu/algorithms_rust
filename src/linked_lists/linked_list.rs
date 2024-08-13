@@ -7,14 +7,24 @@ to the next node in the sequence. The first node in the sequence is called the h
 node is called the tail. The tail node's next reference is None, indicating the end of the list.
 
 Basic operations:
-new: constructor, creates a new linked list instance
+
+new: constructor, creates a new empty linked list instance
+from: creates a new linked list instance from a Vec<T>
+from_value: creates a new linked list instance with a single node containing the given value
+from_node: creates a new linked list instance with the head that is set to the given node
+
+head: returns the head of the linked list
+tail: returns the tail of the linked list
+count: returns the number of nodes in the linked list
+
 push_front: adds a value to the front of the linked list
-push_back: adds a value to the end of the linked list
 pop_front: removes and returns the value of the first node in the linked list
+
+push_back: adds a value to the end of the linked list
 pop_back: removes and returns the value of the last node in the linked list
 
-peek_front: returns the value of the first node in the linked list without removing it
-peek_tail: returns the value of the last node in the linked list without removing it
+peek_head: returns the first node in the linked list without removing it
+peek_tail: returns the last node in the linked list without removing it
 
 insert_at: adds a value at a specific index in the linked list
 remove_at: removes a value at a specific index in the linked list
@@ -46,7 +56,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     // The associated new_empty method creates a new linked list instance with the head that is
     // set to None and the count set to 0, that is, an empty linked list.
     #[allow(dead_code)]
-    pub fn new_empty() -> Self {
+    pub fn new() -> Self {
         LinkedList {
             head: None,
             tail: None,
@@ -81,7 +91,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     // The associated from method creates a new linked list instance from a give Vec<T>
     #[allow(dead_code)]
     pub fn from(values: &Vec<T>) -> Self {
-        let mut instance = LinkedList::new_empty();
+        let mut instance = LinkedList::new();
 
         for value in values.iter().rev() {
             instance.push_front(value.clone());
@@ -118,18 +128,6 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
     #[allow(dead_code)]
     pub fn count(&self) -> i32 {
         self.count
-    }
-
-    #[allow(dead_code)]
-    pub fn experiment(&self) {
-        let mut list =  std::collections::linked_list::LinkedList::new();
-        list.push_front(1);
-        list.push_back(2);
-        list.push_back(3);
-        list.push_back(4);
-
-        let mut iter = list.iter();
-        assert_eq!(iter.next(), Some(&1));
     }
 
     // adds a value to the front of the linked list
@@ -191,68 +189,6 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
             // If the list was empty, return None
             None
         }
-        // above code works
-
-
-
-        // // check if the list is empty
-        // if let Some(head) = self.head.take() {
-        //     // If the list is not empty, take ownership of the current head
-        //     let popped_head = Rc::try_unwrap(head).ok().unwrap().into_inner();
-        //     // let t1: Result<RefCell<Node<T>>, Rc<RefCell<Node<T>>> >= Rc::try_unwrap(head);
-        //     // let t2: Option<RefCell<Node<T>>> = t1.ok();
-        //     // let t3 = match t2 {
-        //     //     Some(t) => t,
-        //     //     None => return None,
-        //     // };
-        //     // let t6: Node<T> = t3.into_inner();
-        //     // let popped_head = t6;
-        //
-        //     // Set the head to the next node
-        //     self.head = popped_head.next;
-        //
-        //     // If the list is now empty after removing the head, also set the tail to None
-        //     if self.head.is_none() {
-        //         //self.tail.take();
-        //         self.tail = None;
-        //     }
-        //     self.count -= 1;
-        //
-        //     Some(popped_head.value)
-        //
-        // } else {
-        //     None
-        // }
-
-        // // check if the list is empty
-        // if let Some(head) = self.head.take() {
-        //     head.map(|head| {
-        //         if let Some(next) = head.borrow_mut().next.take() {
-        //             self.head = Some(next); // sets the new head to the next node
-        //         } else {
-        //             self.head = None; // there is a single node, the list is empty after popping the head off
-        //             self.tail = None;
-        //         }
-        //
-        //         self.count -= 1;
-        //
-        //         Rc::try_unwrap(head).ok().unwrap().into_inner().value
-        //     })
-        // } else {
-        //     None
-        // }
-
-        // self.head.take().map(|head| {
-        //     if let Some(next) = head.borrow_mut().next.take() {
-        //         self.head = Some(next); // sets the new head to the next node
-        //     } else {
-        //         self.head = None; // there is a single node, the list is empty after popping the head off
-        //     }
-
-        //     self.count -= 1;
-
-        //     Rc::try_unwrap(head).ok().unwrap().into_inner().value
-        // })
     }
 
     // Should implement iterator.
@@ -332,26 +268,44 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         }
     }
 
-    // return the value of the last node in the linked list without removing it
+    // view the last node in the linked list without removing it
     #[allow(dead_code)]
-    pub fn peek_tail_without_tail_field(&mut self) -> Option<T> {
+    pub fn peek_tail(&mut self) -> Option<Node<T>> {
+        // Check if the tail exists
+        self.tail.as_ref().map(|tail_node_rc| {
+            // Borrow the node immutably
+            let tail_node = tail_node_rc.borrow();
+            // Clone the node's contents and return it as an Option<Node<T>>
+            Node {
+                value: tail_node.value.clone(),
+                next: None,  // We don't want to clone the whole list, just the tail node
+            }
+        })
+    }
+
+    // view the value of the last node in the linked list without removing it
+    // by traversing the list until the end is reached, not efficient.
+    #[allow(dead_code)]
+    pub fn peek_tail_value(&mut self) -> Option<T> {
         // traverse the list until the end is reached
         let mut current_link = self.head.clone();
         while let Some(current_node) = current_link {
             let node = current_node.borrow();
             match node.clone().next {
                 None => return Some(node.value.clone()),
-                Some(x) => current_link =  Some(x), //&mut node.next,
+                Some(x) => current_link =  Some(x),
             }
         }
         None
     }
 
+    // removes the last node and returns its value. it does the same thing as pop_tail
     #[allow(dead_code)]
     pub fn pop_back(&mut self) -> Option<T> {
         self.pop_tail_2()
     }
 
+    // removes the last node and returns its value
     #[allow(dead_code)]
     pub fn pop_tail(&mut self) -> Option<T> {
         // check if the list is empty
@@ -369,22 +323,6 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
 
             return Some(head.borrow().value.clone());
         }
-
-        // // traverse the list until the second to last node is reached
-        // let mut current = self.head.as_ref().unwrap().clone();
-        // while current.borrow().next.as_ref() != self.tail.as_ref() {
-        //     current = current.borrow().next.as_ref().unwrap().clone();
-        // }
-
-        // // take the last node and set the next node of the second to last node to None
-        // let tail = self.tail.take().unwrap();
-        // current.borrow_mut().next = None;
-        // self.count -= 1;
-        //
-        // // set the second to last node as the new tail
-        // self.tail = Some(current);
-        //
-        // Some(tail.borrow().value.clone())
 
         // The list has more than one node, iterate to find the second-to-last node
         let mut current = self.head.as_ref().unwrap().clone();
@@ -483,8 +421,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_new_empty() {
-        let list = LinkedList::<i32>::new_empty();
+    fn test_new() {
+        let list = LinkedList::<i32>::new();
         assert_eq!(list.count(), 0);
         match list.head() {
             None => assert!(true),
@@ -506,7 +444,7 @@ mod tests {
         // check the head and tail are the same
         are_equal_head_tail(& list);
 
-        // required Node<T> to implement PartialEq
+        // this requires Node<T> to implement PartialEq
         //assert_eq!(list.tail(), list.head());
     }
 
@@ -517,22 +455,27 @@ mod tests {
 
         // check the head and tail are the same
         are_equal_head_tail(& list);
+    }
 
-        // required Node<T> to implement PartialEq
-        //assert_eq!(list.tail(), list.head());
+    #[test]
+    fn test_from() {
+        let mut list = LinkedList::from(&vec![1, 2, 3, 4, 5]);
+        assert_eq!(list.count(), 5);
+
+        let head = list.peek_head().unwrap();
+        assert_eq!(head.value, 1);
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 5);
     }
 
     #[test]
     fn test_push_front(){
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_front(1);
         assert_eq!(list.count(), 1);
 
         // check the head and tail are the same
         are_equal_head_tail(& list);
-
-        // required Node<T> to implement PartialEq
-        //assert_eq!(list.tail(), list.head());
     }
 
     fn are_equal_head_tail(list: & LinkedList<i32>) {
@@ -556,49 +499,48 @@ mod tests {
 
     #[test]
     fn test_push_front_2() {
-        let mut list = LinkedList::new_empty();
-        list.push_front(1);
-        println!("LIST: {:?}", list);
-        println!("HEAD: {:?}", list.head());
-        println!("COUNT: {:?}", list.count());
-    }
-
-    #[test]
-    fn test_push_front_3() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_front(1);
         list.push_front(2);
-        println!("LIST: {:?}", list);
-        println!("HEAD: {:?}", list.head());
-        println!("COUNT: {:?}", list.count());
+
+        let head = list.peek_head().unwrap();
+        assert_eq!(head.value, 2);
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 1);
+
         assert_eq!(list.count(), 2);
     }
 
     #[test]
     fn test_pop_front() { //**************
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_front(1);
         list.push_front(2);
         list.push_front(3);
 
         let value = list.pop_front();
         assert_eq!(value, Some(3));
-        println!("Tail: {:?}", list.tail());
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 1);
 
         let value = list.pop_front();
         assert_eq!(value, Some(2));
-        println!("Tail: {:?}", list.tail());
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 1);
 
         let value = list.pop_front();
         assert_eq!(value, Some(1));
         assert_eq!(list.count(), 0);
-        println!("Tail: {:?}", list.tail());
-        //assert_eq!(list.tail(), None);
+
+        match list.peek_tail() {
+            None => assert!(true),
+            _ => assert!(false),
+        }
     }
 
     #[test]
     fn test_peek_head() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         let node = list.peek_head();
         match node {
             None => assert!(true),
@@ -606,93 +548,73 @@ mod tests {
         }
 
         list.push_front(1);
-        let node = list.peek_head();
-        match node {
-            Some(node) => {
-                assert_eq!(node.value, 1);
-            },
-            None => assert!(false),
-        }
+        let node = list.peek_head().unwrap();
+        assert_eq!(node.value, 1);
 
         list.push_front(2);
-        let node = list.peek_head();
-        // match node {
-        //     Some(node) => {
-        //         assert_eq!(node.value, 2);
-        //     },
-        //     None => assert!(false),
-        // }
-
-        println!("PEEK: {:?}", node);
+        let head = list.peek_head().unwrap();
+        assert_eq!(head.value, 2);
     }
 
     #[test]
     fn test_peek_tail() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_front(1);
         list.push_front(2);
         list.push_front(3);
-        let value = list.peek_tail_without_tail_field();
-        println!("PEEK: {:?}", value);
+        let value = list.peek_tail_value();
+        assert_eq!(value, Some(1));
     }
 
     #[test]
     fn test_traverse() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_front(1);
         list.push_front(2);
         list.push_front(3);
         let values = list.traverse();
-
-        //println!("traversal: {:?}", values);
         assert_eq!(values, vec![3, 2, 1]);
     }
 
     #[test]
     fn test_pop_tail_1() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_front(1);
         list.push_front(2);
         list.push_front(3);
 
         let value = list.pop_tail();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(1));
+
         let value = list.pop_tail();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(2));
+
         let value = list.pop_tail();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(3));
-        //println!("Count: {}", list.count);
         assert_eq!(list.count(), 0);
     }
 
-
     #[test]
     fn test_pop_tail_2() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_back(1);
         list.push_back(2);
         list.push_back(3);
-        //println!("{:?}", list);
 
         let value = list.pop_tail();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(3));
+
         let value = list.pop_tail();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(2));
+
         let value = list.pop_tail();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(1));
-        //println!("Count: {}", list.count);
         assert_eq!(list.count(), 0);
     }
 
     #[test]
     fn test_pop_tail2_1() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         assert!(list.tail.is_none());
         assert!(list.head.is_none());
 
@@ -702,55 +624,34 @@ mod tests {
 
         list.push_back(2);
         list.push_back(3);
-        //println!("{:?}", list);
-
-
         // check the head and tail are correct
-        let head = list.head.clone().unwrap();
-        let value = Rc::clone(&head).borrow().value.clone();
-        assert_eq!(value, 1);
-        let tail = list.tail.clone().unwrap();
-        let value = Rc::clone(&tail).borrow().value.clone();
-        assert_eq!(value, 3);
-
-
-
+        let head = list.peek_head().unwrap();
+        assert_eq!(head.value, 1);
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 3);
 
         let value = list.pop_tail_2();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(3));
-        assert!(list.tail.is_some());
-
 
         // check the head and tail are correct
-        let head = list.head.clone().unwrap();
-        let value = Rc::clone(&head).borrow().value.clone();
-        assert_eq!(value, 1);
-        let tail = list.tail.clone().unwrap();
-        let value = Rc::clone(&tail).borrow().value.clone();
-        assert_eq!(value, 2);
-
-
-
-
+        let head = list.peek_head().unwrap();
+        assert_eq!(head.value, 1);
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 2);
 
         let value = list.pop_tail_2();
         //println!("Popped: {:?}", value);
         assert_eq!(value, Some(2));
 
         // check the head and tail are correct
-        let head = list.head.clone().unwrap();
-        let value = Rc::clone(&head).borrow().value.clone();
-        assert_eq!(value, 1);
-        let tail = list.tail.clone().unwrap();
-        let value = Rc::clone(&tail).borrow().value.clone();
-        assert_eq!(value, 1);
+        let head = list.peek_head().unwrap();
+        assert_eq!(head.value, 1);
+        let tail = list.peek_tail().unwrap();
+        assert_eq!(tail.value, 1);
 
 
         let value = list.pop_tail_2();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(1));
-        //println!("Count: {}", list.count);
         assert_eq!(list.count(), 0);
         assert!(list.tail.is_none());
         assert!(list.head.is_none());
@@ -758,22 +659,19 @@ mod tests {
 
     #[test]
     fn test_pop_tail2_2() {
-        let mut list = LinkedList::new_empty();
+        let mut list = LinkedList::new();
         list.push_back_2(1);
         list.push_back_2(2);
         list.push_back_2(3);
-        //println!("{:?}", list);
 
         let value = list.pop_tail_2();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(3));
+
         let value = list.pop_tail_2();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(2));
+
         let value = list.pop_tail_2();
-        //println!("Popped: {:?}", value);
         assert_eq!(value, Some(1));
-        //println!("Count: {}", list.count);
         assert_eq!(list.count(), 0);
     }
 }
