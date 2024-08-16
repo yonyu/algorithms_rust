@@ -1,2 +1,9 @@
 #![allow(dead_code)]
-pub mod linked_lists;
+mod arrays;
+mod dynamic_programming;
+mod grids;
+mod linked_lists;
+mod lists;
+mod strings;
+mod trees;
+

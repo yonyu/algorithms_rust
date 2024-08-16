@@ -38,7 +38,7 @@ The LinkedList struct has two fields: head and count. The head field is an Optio
 which is an alias for Option<Rc<RefCell<Node<T>>>>. The count field is an i32 that keeps track of
 the number of nodes in the linked list.
 */
-//use std::{borrow::BorrowMut, cell::RefCell};
+
 use std::cell::RefCell;
 use std::fmt::Debug;
 use std::rc::Rc;
@@ -317,7 +317,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         //if self.head.as_ref() == self.tail.as_ref() { // requires deriving PartialEq for Node<T>
         if self.head.as_ref().unwrap().borrow().next.is_none() {
             //return self.pop_front();
-            let head = self.head.take().unwrap();
+            let head = self.head.take()?;
             self.tail.take();
             self.count -= 1;
 
@@ -333,7 +333,7 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
         }
 
         // At this point, `current` is the second-to-last node
-        let tail = current.borrow_mut().next.take().unwrap(); // current.borrow_mut().next becomes None after calling take()
+        let tail = current.borrow_mut().next.take()?; // current.borrow_mut().next becomes None after calling take()
         //let tail_value = Rc::try_unwrap(tail).ok().unwrap().into_inner().value;// not working
 
         // Borrow the inner value of the current head safely
@@ -381,28 +381,37 @@ impl <T: Clone> LinkedList<T> { // where T is Clone and Debug:  Clone + Debug
 
         None
     }
+
+    pub fn iter(&self) -> LinkedListIter<T> {
+        LinkedListIter {
+            current: self.head.clone()
+        }
+    }
 }
 
+
 #[allow(dead_code)]
-pub struct ListIterator<T> {
+pub struct LinkedListIter<T> {
     current: NodeLink<T>,
 }
 
-impl<T: Clone> ListIterator<T>{
+impl<'a, T: 'a + Clone> LinkedListIter<T>{
     #[allow(dead_code)]
-    fn new(start_at: NodeLink<T>) -> ListIterator<T> {
-        ListIterator {
+    fn new(start_at: NodeLink<T>) -> LinkedListIter<T> {
+        LinkedListIter {
             current: start_at,
         }
     }
 }
-impl <T: Clone> Iterator for ListIterator<T> {
+
+impl <T: Clone> Iterator for LinkedListIter<T> {
     type Item = T;
 
     #[allow(dead_code)]
     fn next(&mut self) -> Option<Self::Item> {
         let current = &self.current;
         let mut result = None;
+        // update self.current to the next node
         self.current = match current {
             Some(ref current) => {
                 let current = current.borrow();
@@ -413,6 +422,16 @@ impl <T: Clone> Iterator for ListIterator<T> {
             None => None,
         };
         result
+    }
+}
+
+impl<T: Clone> IntoIterator for LinkedList<T> {
+    type Item = T;
+
+    type IntoIter = LinkedListIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
 
@@ -673,5 +692,35 @@ mod tests {
         let value = list.pop_tail_2();
         assert_eq!(value, Some(1));
         assert_eq!(list.count(), 0);
+    }
+
+    #[test]
+    fn test_iterator() {
+        let list = LinkedList::from(&vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]);
+
+        let mut iter = LinkedListIter::new(list.head());
+        for i in 1..=10 {
+            assert_eq!(iter.next(), Some(i));
+        }
+
+        assert_eq!(iter.next(), None);
+    }
+
+    #[test]
+    fn test_into_iter_empty_list() {
+        let list: LinkedList<i32> = LinkedList::new();
+
+        let mut iter = list.into_iter();
+        assert_eq!(iter.next(), None);
+    }
+
+    #[test]
+    fn test_iter() {
+        let list = LinkedList::from(&vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]);
+        let mut i = 1;
+        for item in list {
+            assert_eq!(item, i);
+            i += 1;
+        }
     }
 }
