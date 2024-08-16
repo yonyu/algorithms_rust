@@ -118,6 +118,15 @@ Please write the function in Rust with the following signature:
 pub fn get_max_consecutive_ones(server_states: &str, k: i32) -> i32
 
 */
+
+/*
+This problem can be solved using a sliding window approach. The idea is to first find all the
+sequences of consecutive '0's in the input string. Then, we can use a sliding window to find the
+maximum sequence of '1's after flipping at most k zero sequences.
+
+The time complexity of this solution is O(n), where n is the length of the input string server_states.
+
+ */
 #[allow(dead_code)]
 fn get_max_consecutive_on(server_states: &str, k: usize) -> i32 {
     if k == 0 || server_states.is_empty() {
@@ -143,19 +152,21 @@ fn get_max_consecutive_on(server_states: &str, k: usize) -> i32 {
         i += 1;
     }
 
-    // If the number of zero sequences is less than k, we can flip all zeros
+    // If the number of zero sequences is less than k, we can flip all zeros to ones
     if store.len() < k {
         return n as i32;
     }
 
-    let mut si = 0;
-    let mut ei = 0;
+    let mut si = 0; // start index of the sliding window, si is inclusive
+    let mut ei = 0; // end index of the sliding window, ei is exclusive
     let mut max_len = 0;
 
     // Step 2: Use a sliding window to find the maximum sequence of '1's after flipping at most k zero sequences
     while ei < store.len() {
-        while ei - si + 1 == k {
+        while ei + 1 - si == k { // for usize numbers, evaluation order matters, ei - si can be negative and causes panic
+            // the left boundary is the previous index of the left boundary of the current sequence
             let mut left = store[si].0 as i32 - 1;
+            // the right boundary is the next index of the right boundary of the current sequence
             let mut right = store[ei].1 as i32 + 1;
 
             // Expand left boundary while it's '1'
@@ -168,6 +179,9 @@ fn get_max_consecutive_on(server_states: &str, k: usize) -> i32 {
                 right += 1;
             }
 
+            // Update max_len with the maximum sequence of '1's.
+            // The length of the sequence is right - left - 1, this is because the left and right
+            // boundaries are '0's. -1 is to exclude the '0's at the boundaries.
             max_len = max(max_len, right - left - 1);
             si += 1;
         }
@@ -193,6 +207,24 @@ mod tests {
 
     #[test]
     fn test_get_max_consecutive_on_2() {
+        let server_states = "111010101100110";
+        let k = 2;
+        let result = get_max_consecutive_on(server_states, k);
+        assert_eq!(result, 8);
+    }
+    
+   
+    #[test]
+    fn test_get_max_consecutive_on_3() {
+        let server_states = "1001";
+        let k = 1;
+        let result = get_max_consecutive_on(server_states, k);
+        assert_eq!(result, 4);
+    }
+
+    
+    #[test]
+    fn test_get_max_consecutive_on_4() {
         let server_states = "111010101100110";
         let k = 2;
         let result = get_max_consecutive_on(server_states, k);
