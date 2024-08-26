@@ -1,5 +1,6 @@
 // An ordered collection of `T`s. isbn: 978-1-492-05259-3, p250
 // Binary tree with Box<TreeNode<T>> as the underline data structure.
+
 enum BinaryTree<T: Ord> {
     Empty,
     NonEmpty(Box<TreeNode<T>>),
