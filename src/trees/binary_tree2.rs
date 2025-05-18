@@ -39,12 +39,12 @@ impl<T> BinaryTree<T>
 where
     T: Clone + Ord,
 {
-    fn new() -> Self {
+    pub fn new() -> Self {
         BinaryTree::Empty
     }
 
     // This method requires T to implement the Ord traits
-    fn add(&mut self, value: T) {
+    pub fn add(&mut self, value: T) {
         match self {
             BinaryTree::Empty => {
                 let new_node = TreeNode {
@@ -66,13 +66,17 @@ where
             }
         }
     }
+
+    pub fn iter(&self) -> TreeIter<T> {
+        TreeIter::new(self)
+    }
 }
 
 impl<T> TreeNode<T>
 where
     T: Clone + Ord,
 {
-    fn new(value: T) -> Self {
+    pub fn new(value: T) -> Self {
         TreeNode {
             value,
             left: BinaryTree::Empty,
@@ -175,5 +179,37 @@ mod tests {
                 right: BinaryTree::Empty,
             })))),
         }))));
+    }
+
+    #[test]
+    fn test_add_2() {
+        let mut tree: BinaryTree<i32> = BinaryTree::new();
+        tree.add(30);
+        tree.add(25);
+        tree.add(35);
+        tree.add(20);
+        tree.add(28);
+        tree.add(15);
+        tree.add(22);
+        tree.add(17);
+        tree.add(16);
+        tree.add(18);
+        //tree.add(35);
+
+        let iter = tree.iter();
+        //let mut value = &iter.next();
+
+        // value = &iter.next();
+        // value = &iter.next();
+
+        let mut result = Vec::new();
+
+        for value in iter {
+            result.push(value);
+        }
+
+        let expected = vec![15, 16, 17, 18, 20, 22, 25, 28, 30, 35];
+        assert_eq!(result, expected);
+
     }
 }
