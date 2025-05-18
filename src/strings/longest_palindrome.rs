@@ -2,49 +2,58 @@
 to find the longest palindromic substring.
  */
 
-pub fn longest_palindrome(s: &str) -> i32 {
+/// Expand Around Center (O(n²))
+/// 
+/// Every palindrome has a center.
+/// 
+/// Expand outward from each character (odd-length palindromes) and each pair of adjacent characters (even-length palindromes).
+pub fn longest_palindrome(s: &str) -> String {
+    if  s.is_empty() {
+        return String::new();
+    }
     let chars: Vec<char> = s.chars().collect();
     let len = chars.len();
-    if len == 0 {
-        return 0;
+    if len == 1 {
+        return chars.iter().collect();
     }
 
-    let mut start: usize; // = 0;
+    let mut start: usize = 0;
     let mut max_len = 1;
 
     // Helper function to expand around center
-    fn expand_around_center(chars: &[char], left: usize, right: usize, len: usize) -> (usize, usize) {
-        if left == right && left == 0 { return (left, right); }
+    // if there are a palindrome, return the left and right index of the longest palindrome.
+    // if no palindrome at all, return the passed-in left and right
+    fn expand_around_center(chars: &[char], left: usize, right: usize) -> (usize, usize) {
         let (mut l, mut r) = (left, right);
-        while l >= 0 && r < len && chars[l] == chars[r] {
-            if r + 1 >= len || l == 0 { break; }
+        while l > 0 && r + 1 < chars.len() && chars[l - 1] == chars[r + 1] {
             l -= 1;
             r += 1;
         }
-        (l + 1, r - 1) // return the valid boundaries
+
+        (l, r)
     }
 
     for i in 0..len {
-        // Odd-length palindromes (center at i)
-        let (l1, r1) = expand_around_center(&chars, i, i, len);
+        // Odd-length palindrome (single center: i)
+        let (l1, r1) = expand_around_center(&chars, i, i);
         if r1 - l1 + 1 > max_len {
             start = l1;
-            max_len = (r1 - l1 + 1) as usize;
+            max_len = r1 - l1 + 1;
         }
 
-        // Even-length palindromes (center between i and i+1)
-        if i < len - 1 {
-            let (l2, r2) = expand_around_center(&chars, i, i + 1, len);
+        // Even-length palindrome (double center: i, i+1)
+        if i + 1 < len && chars[i] == chars[i + 1] {
+            let (l2, r2) = expand_around_center(&chars, i, i + 1);
             if r2 - l2 + 1 > max_len {
                 start = l2;
-                max_len = (r2 - l2 + 1) as usize;
+                max_len = r2 - l2 + 1;
             }
         }
     }
 
-    max_len as i32
+    //max_len as i32
+    chars[start..start + max_len].iter().collect()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -52,8 +61,9 @@ mod tests {
 
     #[test]
     fn test_longest_palindrome() {
-        let s = "babad";
-        let result = longest_palindrome(s);
-        assert_eq!(result, 3);
+        let test_cases = vec!["babad", "cbbd", "rarr", "racecar", "rarrrr"];
+        let palindromes = vec!["bab", "bb", "rar", "racecar", "rrrr"];
+        let results = test_cases.iter().map(|s| longest_palindrome(s)).collect::<Vec<_>>();
+        assert_eq!(results, palindromes);
     }
 }
