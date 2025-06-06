@@ -8,6 +8,8 @@ mod lists;
 mod strings;
 mod trees;
 
+mod recursion;
+
 //use std::collections::VecDeque;
 
 fn main() {
