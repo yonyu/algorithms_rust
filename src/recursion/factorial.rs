@@ -1,6 +1,7 @@
 ///
 /// calculate factorial with recursion.
 /// this concept proof only, not efficient.
+/// you would never want to use a recursive factorial function in real-world code.
 pub fn factorial(n: usize) -> usize {
     // base case
     if n == 0 {
