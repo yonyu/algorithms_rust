@@ -13,3 +13,4 @@ pub mod fibonacci_number_with_digits;
 mod double_based_palindrome;
 pub(crate) mod ant_on_the_move;
 pub mod computing_nth_fibonacci_number;
+pub mod get_minimum_subsequence;
