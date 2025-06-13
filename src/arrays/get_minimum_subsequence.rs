@@ -1,10 +1,12 @@
 /// This is a FANNG interview question.
+/// To find the minimum subsequence that maintains the same sum of absolute differences between 
+/// adjacent elements.
 /// 
+/// Example 1:
 /// Given an array 5 4 0 3 3 1, take sum of absolute differences between adjacent 
 /// pairs i.e |5-4|+|4-0|+|0-3|+|3-3|+|3-1| = 10
 /// The task is to remove as many elements from the array such that the sum remains same.
 /// 
-/// Example 1:
 /// soln 1=> 5 4 0 3 1 : in this case sum of absolute differences between adjacent 
 /// pairs is same as 10.
 /// soln 2 => 5 0 3 1 : in this case as well sum of absolute differences between 
@@ -21,6 +23,8 @@ pub fn get_min_subsequence(arr: &[i32]) -> Vec<i32> {
     if n <= 1 {
         return result;
     }
+    
+    let b:[u64; 5];
 
     // Always keep the first element
     result.push(arr[0]);
@@ -35,9 +39,12 @@ pub fn get_min_subsequence(arr: &[i32]) -> Vec<i32> {
             continue;
         }
 
-        // if it is a local extrema (in case [1, 2, 2], the first 2 is a turning point)
-        if (curr > prev && curr >= next) || (curr < prev && curr <= next) {
-            result.push(arr[i]);
+        // Keep local extrema (turning points) (in case [1, 2, 2], the first 2 is a turning point)
+        let is_local_max = curr > prev && curr >= next;
+        let is_local_min = curr < prev && curr <= next;
+
+        if is_local_max || is_local_min {
+            result.push(curr);
         }
     }
 
