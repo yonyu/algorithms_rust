@@ -58,6 +58,25 @@ pub fn min_coins(coins: &[u32], amount: u32) -> Option<u32> {
     }
 }
 
+
+/// Solves change make and also returns coins with their counts using backtracking
+/// 
+/// This function builds on the DP solution but uses backtracking to reconstruct
+/// the optimal solution and count how many times each coin denomination is used.
+/// 
+/// # Arguments
+/// * `coins` - A slice of coin denominations (assumed to be sorted)
+/// * `amount` - The target amount to make change for
+/// 
+/// # Returns
+/// * `Some((total_coins, coin_counts))` - Where coin_counts is a vector of (coin_value, count) tuples
+/// * `None` - If it's impossible to make the target amount
+/// 
+/// # Algorithm:
+/// 1. First, use DP to find if a solution exists and build the parent tracking table
+/// 2. Then, backtrack from the target amount to reconstruct the solution
+/// 3. Count occurrences of each coin denomination
+/// 4. Return the counts as (coin_value, count) pairs
 pub fn min_coins_with_counts(coins: &[u32], amount: u32) -> Option<(u32, Vec<(u32, u32)>)> {
     // dp[i] represents the minimum coins needed to make amount i
     // Initialize with a value larger than any possible answer
@@ -87,25 +106,30 @@ pub fn min_coins_with_counts(coins: &[u32], amount: u32) -> Option<(u32, Vec<(u3
         }
     }
 
-    let mut coin_counts = HashMap::new();
-
+    // Backtrack to reconstruct the solution
+    let mut result_coins = HashMap::new();
     let mut current = amount;
+
+    // Trace back through the parent array to find which coins were used
     while current > 0 {
         let coin = parent[current as usize];
-        *coin_counts.entry(coin).or_insert(0) += 1;
+        // Increment the count for this coin denomination
+        *result_coins.entry(coin).or_insert(0) += 1;
 
+        // Move to the remaining amount after using this coin
         current -= coin;
     }
+    // Convert HashMap to sorted vector of (coin_value, count) tuples
+    let mut coins_counts: Vec<(u32, u32)> = result_coins.into_iter().collect();
 
-    let mut result_coins: Vec<(u32, u32)> = coin_counts.into_iter().collect();
-
-    result_coins.sort_by_key(|&(coin_value, _coin_count)| coin_value);
+    // Sort by coin value for consistent output
+    coins_counts.sort_by_key(|&(coin_value, _coin_count)| coin_value);
 
     // If dp[amount] is still the initial value, it means we couldn't make the amount
     if dp[amount as usize] == amount + 1 {
         None
     } else {
-        Some((dp[amount as usize], result_coins))
+        Some((dp[amount as usize], coins_counts))
     }
 
 }
