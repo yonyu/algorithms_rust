@@ -23,8 +23,6 @@ pub fn get_min_subsequence(arr: &[i32]) -> Vec<i32> {
     if n <= 1 {
         return result;
     }
-    
-    let b:[u64; 5];
 
     // Always keep the first element
     result.push(arr[0]);
