@@ -7,3 +7,4 @@ pub mod lists;
 pub mod strings;
 pub mod trees;
 pub mod recursion;
+pub mod caching;
