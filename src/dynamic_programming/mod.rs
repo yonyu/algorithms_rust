@@ -5,3 +5,5 @@ pub mod minimum_sum_descent;
 pub mod minimum_sum_descent2;
 pub mod knapsack;
 pub mod coin_change_making_v2;
+pub mod text_parser;
+pub mod word_breaker;
